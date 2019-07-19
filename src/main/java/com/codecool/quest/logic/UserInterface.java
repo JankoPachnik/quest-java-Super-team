@@ -17,6 +17,9 @@ public class UserInterface {
     private Label inventoryLabelText = new Label("»»»INVENTORY«««");
     private Label inventoryLabel = new Label();
     private Label messageLabel = new Label();
+    private Label healthBarText = new Label();
+    private Label lab = new Label();
+
 
     public GridPane topPane = new GridPane();
     public GridPane bottomPane = new GridPane();
@@ -24,7 +27,9 @@ public class UserInterface {
 
 
     public UserInterface(){
-
+        healthBarText.setTextFill(Color.WHITESMOKE);
+        topPane.add(healthBarText, 0, 0);
+        topPane.add(lab, 1, 0);
     }
 
     public Label getMessageLabel() {
@@ -70,10 +75,15 @@ public class UserInterface {
         bottomPane.add(messageLabel, 0, 0);
     }
 
-//    public void displayMonsterHealthBar(Monster monster){
-//        Label lab = new Label(monster.getTileName());
-//        ui.add(lab, 0, 0);
-//    }
+    public void showPlayerHealthBar(int health){
+        lab.setText(String.valueOf(health));
+        lab.setTextFill(Color.WHITESMOKE);
+    }
+
+    public void showPlayerName(String name){
+        healthBarText.setText(name + ": ");
+        lab.setTextFill(Color.WHITESMOKE);
+    }
 
     public void showInventory(GameMap map){
         Inventory inv = map.getPlayer().getPlayerInventory();
@@ -96,6 +106,8 @@ public class UserInterface {
             @Override public void handle(ActionEvent e) {
                 String name = textField.getText();
                 map.getPlayer().setName(name);
+
+                showPlayerName(name); //at top pane
             }
         });
 

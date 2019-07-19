@@ -158,6 +158,7 @@ public class Main extends Application {
     }
 
     private void refresh() {
+        showHealthBar();
         moveMonsters();
         showInventory();
         context.setFill(Color.BLACK);
@@ -184,6 +185,10 @@ public class Main extends Application {
         }
     }
 
+    private void showHealthBar(){
+        int playerHealth = map.getPlayer().getHealth();
+        UserInterface.showPlayerHealthBar(playerHealth);
+    }
 
 
     private void showInventory(){
