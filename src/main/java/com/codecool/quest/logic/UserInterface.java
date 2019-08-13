@@ -1,11 +1,14 @@
 package com.codecool.quest.logic;
 
-import com.codecool.quest.logic.actors.monsters.Monster;
+import com.codecool.quest.Tiles;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 
@@ -20,14 +23,12 @@ public class UserInterface {
     private Label healthBarText = new Label();
     private Label lab = new Label();
 
-
     public GridPane topPane = new GridPane();
     public GridPane bottomPane = new GridPane();
     public GridPane ui = new GridPane();
 
 
     public UserInterface(){
-        healthBarText.setTextFill(Color.WHITESMOKE);
         topPane.add(healthBarText, 0, 0);
         topPane.add(lab, 1, 0);
     }
@@ -75,15 +76,6 @@ public class UserInterface {
         bottomPane.add(messageLabel, 0, 0);
     }
 
-    public void showPlayerHealthBar(int health){
-        lab.setText(String.valueOf(health));
-        lab.setTextFill(Color.WHITESMOKE);
-    }
-
-    public void showPlayerName(String name){
-        healthBarText.setText(name + ": ");
-        lab.setTextFill(Color.WHITESMOKE);
-    }
 
     public void showInventory(GameMap map){
         Inventory inv = map.getPlayer().getPlayerInventory();
@@ -92,11 +84,16 @@ public class UserInterface {
 
 
     private void createNameField(GameMap map) {
-        Label label1 = new Label("Name:");
-        label1.setTextFill(Color.INDIANRED);
-        TextField textField = new TextField ();
-        textField.setText("Wojo69");
-        map.getPlayer().setName(textField.getText()); //set name as default
+        Label nameLabel = new Label("Name:");
+        nameLabel.setTextFill(Color.INDIANRED);
+
+        TextField textField = new TextField ("Wojo69");
+        String playerName = textField.getText();
+
+        map.getPlayer().setName(playerName); //set default name to player
+        showPlayerName(playerName); //at topBar
+
+        //prevents arrow keys from selecting buttons
         textField.setFocusTraversable(false);
         textField.getStyleClass().add("name-field");
 
@@ -104,15 +101,34 @@ public class UserInterface {
         submit.getStyleClass().add("btn");
         submit.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
-                String name = textField.getText();
-                map.getPlayer().setName(name);
+                String newName = textField.getText();
 
-                showPlayerName(name); //at top pane
+                map.getPlayer().setName(newName);
+                showPlayerName(newName); //at topBar
             }
         });
 
-        ui.add(label1, 0, 0);
+        ui.add(nameLabel, 0, 0);
         ui.add(textField, 0, 2);
         ui.add(submit, 1, 2);
+    }
+
+    public void showPlayerHealthBar(int health){
+
+        ImageView image = new ImageView(Tiles.getTileset());
+//        Rectangle2D tile = new Rectangle2D( Tiles.getTile("heart").x,
+//                Tiles.getTile("heart").y, Tiles.getTile("heart").x + 34,  Tiles.getTile("heart").y + 34);
+//       image.setImage();
+        Label label1 = new Label("Search");
+        label1.setGraphic(image);
+
+        ui.add(label1, 0, 0);
+        lab.setText(String.valueOf(health));
+        lab.setTextFill(Color.WHITESMOKE);
+    }
+
+    private void showPlayerName(String name){
+        healthBarText.setText(name + ": ");
+        healthBarText.setTextFill(Color.WHITESMOKE);
     }
 }
