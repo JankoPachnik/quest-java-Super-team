@@ -9,6 +9,7 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -129,6 +130,7 @@ public class Main extends Application {
     }
 
     private void refresh() {
+        showHealthBar();
         showInventory();
         context.setFill(Color.BLACK);
         context.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
@@ -154,7 +156,10 @@ public class Main extends Application {
         }
     }
 
-
+    private void showHealthBar(){
+        int playerHealth = map.getPlayer().getHealth();
+        UserInterface.showPlayerHealthBar(playerHealth);
+    }
 
     private void showInventory(){
         Inventory inv = map.getPlayer().getPlayerInventory();

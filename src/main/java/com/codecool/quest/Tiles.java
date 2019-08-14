@@ -39,6 +39,7 @@ public class Tiles {
         tileMap.put("chest_opened", new Tile(9, 6));
         tileMap.put("sword", new Tile(1, 30));
         tileMap.put("key", new Tile(16,23));
+//        tileMap.put("heart", new Tile(24,26));
     }
 
     public static void drawTile(GraphicsContext context, Drawable d, int x, int y) {
@@ -46,4 +47,14 @@ public class Tiles {
         context.drawImage(tileset, tile.x, tile.y, tile.w, tile.h,
                 x * TILE_WIDTH, y * TILE_WIDTH, TILE_WIDTH, TILE_WIDTH);
     }
+
+    public static Tile getTile(String tileName){
+        return tileMap.get(tileName);
+    }
+
+    public static Image getTileset() {
+        return tileset;
+    }
+
+
 }
