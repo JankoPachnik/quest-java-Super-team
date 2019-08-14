@@ -22,6 +22,8 @@ public abstract class Item implements Drawable {
         return 0;
     }
 
+    public int getDefenseModifier() { return 0; }
+
     public int getDurability() {
         return durability;
     }

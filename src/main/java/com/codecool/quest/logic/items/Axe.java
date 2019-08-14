@@ -2,26 +2,26 @@ package com.codecool.quest.logic.items;
 
 import com.codecool.quest.logic.Cell;
 
-public class Sword extends Item {
+public class Axe extends Item {
 
-    public Sword(Cell cell) {
+    public Axe(Cell cell) {
         super(cell);
-        this.durability = 150;
+        this.durability = 90;
     }
 
     @Override
     public String getTileName() {
-        return "sword";
+        return "axe";
     }
 
     @Override
     public String toString() {
-        return "SWORD";
+        return "AXE";
     }
 
     @Override
     public int getAttackModifier() {
-        return 5;
+        return 10;
     }
 
     // sword check durability method and delete sword method

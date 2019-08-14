@@ -1,6 +1,7 @@
 package com.codecool.quest.logic.actors;
 
 import com.codecool.quest.logic.Cell;
+import com.codecool.quest.logic.CellType;
 import com.codecool.quest.logic.Inventory;
 import com.codecool.quest.logic.interactable.Interactable;
 import com.codecool.quest.logic.items.Item;
@@ -11,14 +12,20 @@ public class Player extends Actor {
     private Inventory playerInventory;
     private String name;
 
-    private Item currentlyEquipped = null;
+    private Item currentWeapon = null;
+    private Item currentArmor = null;
+
+    private int maxHealth;
+    private boolean isAttackBoosted;
 
     public Player(Cell cell) {
         super(cell);
         playerInventory = new Inventory();
         this.isEnemy = false;
         this.health = 15;
+        maxHealth = 15;
         this.attackPower = 5;
+        isAttackBoosted = false;
     }
 
     public String getTileName() {
@@ -27,11 +34,27 @@ public class Player extends Actor {
     }
 
     public void changeEquippedWeapon(Item newWeapon){
-        currentlyEquipped = newWeapon;
+        currentWeapon = newWeapon;
     }
 
+    public void changeEquippedArmor(Item newArmor) { currentArmor = newArmor; }
+
     public int getEquippedWeaponAttack(){
-        return currentlyEquipped.getAttackModifier();
+        return currentWeapon.getAttackModifier();
+    }
+
+    @Override
+    public int getDefense(){
+        if (currentArmor != null)
+            return currentArmor.getDefenseModifier();
+        else
+            return 0;
+    }
+
+    public int getAttackModifier(){
+        if(isAttackBoosted)
+            return 3;
+        return 1;
     }
 
     public Inventory getPlayerInventory(){
@@ -59,35 +82,63 @@ public class Player extends Actor {
             item.vanishItem();
             playerInventory.addItem(item);
 
-            if(item.getTileName().equals("sword"))
+            if(item.getTileName().equals("sword") || item.getTileName().equals("axe"))
                 changeEquippedWeapon(item);
+            if(item.getTileName().equals("armor"))
+                changeEquippedArmor(item);
 
             return true;
         }
         return false;
     }
 
-
-
     public String attack(){
         Actor actor = getNextCell().getActor();
         if(actor!= null) {
             if(actor.isEnemy) {
-                if (currentlyEquipped != null) {
-                    //actor.printHealth("before");
-                    actor.receiveAttack((getAttackPower() + getEquippedWeaponAttack()), this);
+                if (currentWeapon != null) {
+                    actor.receiveAttack((getAttackPower() + getEquippedWeaponAttack())*getAttackModifier(), actor.getDefense(), this);
 
-                    currentlyEquipped.setDurability(-30);
+                    currentWeapon.setDurability(-30);
 
-                    if (currentlyEquipped.getDurability() <= 0) {
-                        currentlyEquipped = null;
-                        this.playerInventory.removeItem("sword");
+                    if (currentWeapon.getDurability() <= 0) {
+                        this.playerInventory.removeItem(this.currentWeapon.getTileName());
+                        currentWeapon = this.playerInventory.getWeapon();
                     }
                 } else
-                    actor.receiveAttack(getAttackPower(), this);
+                    actor.receiveAttack(getAttackPower(), actor.getDefense(), this);
+                isAttackBoosted = false;
             }
         }
-        return getAttackMessage();
+        if(!this.isDead()) {
+            return getAttackMessage();
+        }else{
+            return "";
+        }
+    }
+
+    public String useHealthPotion(){ // heals for max 10hp or up to max hp (if potion in inventory)
+        if(this.playerInventory.checkForItem("health_potion")){
+            this.playerInventory.removeItem("health_potion");
+            if(this.health < this.maxHealth - 10){
+                this.health += 10;
+            }else{
+                this.health = this.maxHealth;
+            }
+
+            return "Healed 10 HP";
+        }
+
+        return "You don't have health potions!";
+    }
+
+    public String usePowerPotion(){ // multiplies dmg done by 3 for 1 attack (if potion in inventory)
+        if(this.playerInventory.checkForItem("power_potion")){
+            this.playerInventory.removeItem("power_potion");
+            isAttackBoosted = true;
+            return "Next attack will be 3x more powerful!";
+        }
+        return "You don't have power potions!";
     }
 
     public String talk(){
@@ -141,6 +192,14 @@ public class Player extends Actor {
 
     public String getName(){
         return name;
+    }
+
+    public void updatePlayerNewPosition(Player nextLevelPlayer){
+        this.changeCell(nextLevelPlayer.getCell());
+    }
+
+    public boolean isOnStairs(){
+        return this.getCell().getType()== CellType.STAIRS;
     }
 
 }

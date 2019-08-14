@@ -27,6 +27,7 @@ public class Tiles {
         tileMap.put("empty", new Tile(0, 0));
         tileMap.put("wall", new Tile(1, 3));
         tileMap.put("floor", new Tile(2, 0));
+        tileMap.put("stairs", new Tile(3, 6));
         tileMap.put("player", new Tile(27, 0));
         tileMap.put("wizard", new Tile(24, 1));
         tileMap.put("guard", new Tile(29, 0));
@@ -38,7 +39,11 @@ public class Tiles {
         tileMap.put("chest_closed", new Tile(8, 6));
         tileMap.put("chest_opened", new Tile(9, 6));
         tileMap.put("sword", new Tile(1, 30));
+        tileMap.put("axe", new Tile(6, 29));
+        tileMap.put("armor", new Tile(0, 23));
         tileMap.put("key", new Tile(16,23));
+        tileMap.put("health_potion", new Tile(17,25));
+        tileMap.put("power_potion", new Tile(18,25));
 //        tileMap.put("heart", new Tile(24,26));
     }
 
@@ -48,13 +53,13 @@ public class Tiles {
                 x * TILE_WIDTH, y * TILE_WIDTH, TILE_WIDTH, TILE_WIDTH);
     }
 
-    public static Tile getTile(String tileName){
-        return tileMap.get(tileName);
-    }
-
-    public static Image getTileset() {
-        return tileset;
-    }
+//    public static Tile getTile(String tileName){
+//        return tileMap.get(tileName);
+//    }
+//
+//    public static Image getTileset() {
+//        return tileset;
+//    }
 
 
 }

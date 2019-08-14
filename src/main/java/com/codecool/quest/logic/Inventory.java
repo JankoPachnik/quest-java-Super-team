@@ -16,7 +16,7 @@ public class Inventory {
         if(!(inventory.size() == 0)){
             for(Item item: inventory){
                 itemsSB.append(" » ");
-                itemsSB.append(item.getTileName().toUpperCase());
+                itemsSB.append(item.toString());
                 itemsSB.append("\n");
             }
         }else{
@@ -54,6 +54,21 @@ public class Inventory {
             }
         }
         return isItem;
+    }
+
+    public Item getItem(String itemName){
+        for (int i=0; i<inventory.size();i++) {
+            if (itemName.equals(inventory.get(i).getTileName())) {
+                return inventory.get(i);
+            }
+        }
+        return null;
+    }
+
+    public Item getWeapon(){
+        Item weapon = this.getItem("sword");
+        if(weapon == null) weapon = this.getItem("axe");
+        return weapon;
     }
 
 }

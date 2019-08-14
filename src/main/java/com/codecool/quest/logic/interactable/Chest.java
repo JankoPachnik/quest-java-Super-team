@@ -1,9 +1,7 @@
 package com.codecool.quest.logic.interactable;
 
 import com.codecool.quest.logic.Cell;
-import com.codecool.quest.logic.items.Item;
-import com.codecool.quest.logic.items.Key;
-import com.codecool.quest.logic.items.Sword;
+import com.codecool.quest.logic.items.*;
 
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -48,7 +46,7 @@ public class Chest extends Interactable {
     public Item searchForItems(){
         Item found = null;
         if(!searched) {
-            switch (ThreadLocalRandom.current().nextInt(0, 3)) {
+            switch (ThreadLocalRandom.current().nextInt(0, 7)) { //0 - 2
                 case 0:
                     found = new Sword(null);
                     break;
@@ -57,6 +55,18 @@ public class Chest extends Interactable {
                     break;
                 case 2:
                     found = null;
+                    break;
+                case 3:
+                    found = new Axe(null);
+                    break;
+                case 4:
+                    found = new Armor(null);
+                    break;
+                case 5:
+                    found = new HealthPotion(null);
+                    break;
+                case 6:
+                    found = new PowerPotion(null);
                     break;
             }
             searched = true;

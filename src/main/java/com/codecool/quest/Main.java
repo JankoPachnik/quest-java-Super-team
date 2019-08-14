@@ -63,7 +63,6 @@ public class Main extends Application {
         primaryStage.show();
     }
 
-
     private void moveMonsters() {
         List<Monster> monsters = map.getMonsters();
 
@@ -73,58 +72,70 @@ public class Main extends Application {
     }
 
     private void movePlayer(String direction, int xDir, int yDir) {
-        map.getPlayer().changeDirection(direction);
+        Player player = map.getPlayer();
+        player.changeDirection(direction);
         if(changingDirection){
             UserInterface.getMessageLabel().setText("Attacking direction: " + direction);
         }else{
-            map.getPlayer().move(xDir, yDir);
+            player.move(xDir, yDir);
             moveMonsters();
             UserInterface.getMessageLabel().setText("");
+            if(player.isOnStairs()){
+                map = MapLoader.loadNextLevel();
+                player.updatePlayerNewPosition(map.getPlayer());
+                map.setPlayer(player);
+            }
         }
     }
 
-
     private void onKeyPressed(KeyEvent keyEvent) {
         Player player = map.getPlayer();
-        Inventory playerInventory = player.getPlayerInventory();
-        Interactable interactableItem = player.getNextCell().getInteractable();
-
-        if(player.getHealth() > 0)
-        switch (keyEvent.getCode()) {
-            case UP:
-                movePlayer("up", 0, -1);
-                break;
-            case DOWN:
-                movePlayer("down", 0, 1);
-                break;
-            case LEFT:
-                movePlayer("left", -1, 0);
-                break;
-            case RIGHT:
-                movePlayer("right", 1, 0);
-                break;
-            case E:
-                if(player.pickItem()) {
-                    UserInterface.getMessageLabel().setText(String.format("Picked a %s",playerInventory.getLastItem()));
-                }else if(interactableItem != null) { //check for doors/chests
-                    String interactionMessage = player.interactWithObject(interactableItem);
-                    UserInterface.getMessageLabel().setText(interactionMessage);
-                }else{
-                    String message = player.talk();
+        if(player.getHealth() > 0) {
+            Inventory playerInventory = player.getPlayerInventory();
+            Interactable interactableItem = player.getNextCell().getInteractable();
+            switch (keyEvent.getCode()) {
+                case UP:
+                    movePlayer("up", 0, -1);
+                    break;
+                case DOWN:
+                    movePlayer("down", 0, 1);
+                    break;
+                case LEFT:
+                    movePlayer("left", -1, 0);
+                    break;
+                case RIGHT:
+                    movePlayer("right", 1, 0);
+                    break;
+                case E:
+                    if (player.pickItem()) {
+                        UserInterface.getMessageLabel().setText(String.format("Picked a %s", playerInventory.getLastItem()));
+                    } else if (interactableItem != null) { //check for doors/chests
+                        String interactionMessage = player.interactWithObject(interactableItem);
+                        UserInterface.getMessageLabel().setText(interactionMessage);
+                    } else {
+                        String message = player.talk();
+                        UserInterface.getMessageLabel().setText(message);
+                    }
+                    break;
+                case R:
+                    if (!changingDirection) {
+                        changingDirection = true;
+                        UserInterface.getMessageLabel().setText("Choose attack direction and press R to attack");
+                    } else {
+                        String message = player.attack();
+                        UserInterface.getMessageLabel().setText(message);
+                        changingDirection = false;
+                    }
+                    break;
+                case H:
+                    String message = player.useHealthPotion();
                     UserInterface.getMessageLabel().setText(message);
-                }
-                break;
-            case R:
-                if(!changingDirection){
-                    changingDirection = true;
-                    UserInterface.getMessageLabel().setText("Choose attack direction and press R to attack");
-                }else{
-                    String message = player.attack();
-                    UserInterface.getMessageLabel().setText(message);
-                    changingDirection = false;
-                }
-                break;
-
+                    break;
+                case J:
+                    String msg = player.usePowerPotion();
+                    UserInterface.getMessageLabel().setText(msg);
+                    break;
+            }
         }
         refresh();
     }

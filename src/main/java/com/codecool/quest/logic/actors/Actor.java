@@ -13,6 +13,7 @@ public abstract class Actor implements Drawable, Movable {
     protected int health;
     private String[] cheatNames = {"Michał", "Piotrek", "Janek", "Olek", "Daniel"};
     protected int attackPower;
+    protected int defense;
     private String direction;
     protected boolean isEnemy;
     private boolean dead;
@@ -24,6 +25,7 @@ public abstract class Actor implements Drawable, Movable {
         this.cell.setActor(this);
         this.direction = "up";
         this.dead = false;
+        this.defense = 0;
     }
 
     public void move(int dx, int dy) {
@@ -73,6 +75,10 @@ public abstract class Actor implements Drawable, Movable {
         return attackPower;
     }
 
+    public int getDefense(){
+        return defense;
+    }
+
     public String getDirection(){
         return direction;
     }
@@ -111,8 +117,8 @@ public abstract class Actor implements Drawable, Movable {
 
     // public void setOnChange(...)
 
-    public void receiveAttack(int receivedDamage, Actor player){
-        changeHealth(-receivedDamage);
+    public void receiveAttack(int receivedDamage, int defenseModifier, Actor player){
+        changeHealth(-(receivedDamage-defenseModifier));
 
         // onHealthChange();
         if (health<=0){
@@ -124,7 +130,7 @@ public abstract class Actor implements Drawable, Movable {
     }
 
     public void attackPlayer(Actor player){
-        player.receiveAttack(getAttackPower(),null);
+        player.receiveAttack(getAttackPower(), player.getDefense(), null);
     }
 
     public void die(){
