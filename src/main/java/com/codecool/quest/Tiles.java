@@ -28,9 +28,12 @@ public class Tiles {
         tileMap.put("wall", new Tile(1, 3));
         tileMap.put("floor", new Tile(2, 0));
         tileMap.put("stairs", new Tile(3, 6));
-        tileMap.put("player", new Tile(27, 0));
+        tileMap.put("player", new Tile(25, 0));
+        tileMap.put("playerInArmor", new Tile(30, 0));
+        tileMap.put("playerWithWeapon", new Tile(27, 0));
+        tileMap.put("playerWithWeaponInArmor", new Tile(28, 0));
         tileMap.put("wizard", new Tile(24, 1));
-        tileMap.put("guard", new Tile(29, 0));
+        tileMap.put("guard", new Tile(28, 1));
         tileMap.put("skeleton", new Tile(29, 6));
         tileMap.put("ghost", new Tile(26, 6));
         tileMap.put("golem", new Tile(30, 6));

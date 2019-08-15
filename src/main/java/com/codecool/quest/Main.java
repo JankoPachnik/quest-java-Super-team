@@ -63,11 +63,17 @@ public class Main extends Application {
         primaryStage.show();
     }
 
-    private void moveMonsters() {
+    private void monstersAction() {
         List<Monster> monsters = map.getMonsters();
 
         for (Monster monster : monsters) {
-            if(!monster.isDead()) monster.move();
+            if(!monster.isDead()){
+                if(monster.isHostile() && monster.isInRange(map.getPlayer())){
+                    monster.attackPlayer(map.getPlayer());
+                }else{
+                    monster.move();
+                }
+            }
         }
     }
 
@@ -78,8 +84,9 @@ public class Main extends Application {
             UserInterface.getMessageLabel().setText("Attacking direction: " + direction);
         }else{
             player.move(xDir, yDir);
-            moveMonsters();
+            monstersAction();
             UserInterface.getMessageLabel().setText("");
+            if(!player.isDead())
             if(player.isOnStairs()){
                 map = MapLoader.loadNextLevel();
                 player.updatePlayerNewPosition(map.getPlayer());
@@ -205,6 +212,7 @@ public class Main extends Application {
                             UserInterface.labMonster.setVisible(false);
                         }
                         changingDirection = false;
+                        monstersAction();
                     }
                     break;
                 case F:

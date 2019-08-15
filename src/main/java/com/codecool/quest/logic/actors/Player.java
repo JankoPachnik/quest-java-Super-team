@@ -33,7 +33,9 @@ public class Player extends Actor {
     }
 
     public String getTileName() {
-
+        if(currentArmor!= null && currentWeapon==null) return "playerInArmor";
+        if(currentArmor== null && currentWeapon!=null) return "playerWithWeapon";
+        if(currentArmor!= null && currentWeapon!=null) return "playerWithWeaponInArmor";
         return "player";
     }
 

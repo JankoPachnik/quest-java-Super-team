@@ -9,6 +9,7 @@ public class Golem extends Monster {
         this.health = 30;
         this.attackPower = 5;
         this.isEnemy = true;
+        this.isHostile = false;
         setText(new String[]{"*Badum*","Please don't","I have a wife and family!"});
     }
 
