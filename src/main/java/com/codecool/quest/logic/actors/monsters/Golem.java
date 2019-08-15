@@ -20,7 +20,7 @@ public class Golem extends Monster {
     }
 
     public String getName(){
-        return "";
+        return "Golem";
     }
 
     @Override

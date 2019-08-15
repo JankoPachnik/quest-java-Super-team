@@ -1,6 +1,7 @@
 package com.codecool.quest.logic;
 
 import com.codecool.quest.Tiles;
+import com.codecool.quest.logic.actors.Player;
 import com.codecool.quest.logic.actors.monsters.Monster;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -19,16 +20,21 @@ import javafx.scene.paint.Color;
 
 public class UserInterface {
 
-    private Label healthLabelText = new Label("Health: ");
-    private Label healthLabel = new Label();
+//    private Label healthLabelText = new Label("Health: ");
+//    private Label healthLabel = new Label();
     private Label inventoryLabelText = new Label("»»»INVENTORY«««");
     private Label inventoryLabel = new Label();
     private Label messageLabel = new Label();
     private Label healthBarText = new Label();
-    private Label lab = new Label();
+    private Label labPlayerName = new Label();
+    public Label labMonsterName = new Label();
+    private Label labPlayer = new Label();
+    public Label labMonster = new Label();
 
-    PixelReader reader;
-    Image image;
+    PixelReader readerPlayer;
+    Image imagePlayer;
+    PixelReader readerMonster;
+    Image imageMonster;
     WritableImage newImage;
     ImageView image1;
     public GridPane topPane = new GridPane();
@@ -37,17 +43,21 @@ public class UserInterface {
 
 
     public UserInterface(){
-        topPane.add(healthBarText, 0, 0);
-        topPane.add(lab, 1, 0);
+//        topPane.add(healthBarText, 0, 0);
+        topPane.add(labPlayerName, 0, 0);
+        topPane.add(labPlayer, 1, 0);
+        topPane.add(labMonsterName, 0,1);
+        topPane.add(labMonster, 1,1);
+      
     }
 
     public Label getMessageLabel() {
         return messageLabel;
     }
 
-    public Label getHealthLabel() {
-        return healthLabel;
-    }
+//    public Label getHealthLabel() {
+//        return healthLabel;
+//    }
 
     public Label getInventoryLabel() {
         return inventoryLabel;
@@ -62,11 +72,6 @@ public class UserInterface {
         createNameField(map);
         ui.getStyleClass().add("ui-pane");
 
-        healthLabelText.setTextFill(Color.INDIANRED);
-        healthLabel.setTextFill(Color.WHITESMOKE);
-        ui.add(healthLabelText, 0, 4);
-        ui.add(healthLabel, 1, 4);
-
         inventoryLabelText.setTextFill(Color.INDIANRED);
         inventoryLabel.setTextFill(Color.LIGHTGOLDENRODYELLOW);
         ui.add(inventoryLabelText, 0, 6);
@@ -76,10 +81,12 @@ public class UserInterface {
         ui.add(lab, 0, 20);
 
 
-        image = new Image("/health_bar2.png") ;
-        reader = image.getPixelReader();
+        imagePlayer = new Image("/health_bar_player.png") ;
+        readerPlayer = imagePlayer.getPixelReader();
+        imageMonster = new Image("/health_bar_monster.png") ;
+        readerMonster = imageMonster.getPixelReader();
         int width = 68;
-        newImage = new WritableImage(reader, 1, 1, 68, 15);
+        newImage = new WritableImage(readerPlayer, 1, 1, 68, 15);
         image1 = new ImageView(newImage);
     }
 
@@ -91,10 +98,6 @@ public class UserInterface {
         bottomPane.add(messageLabel, 0, 0);
     }
 
-//    public void displayMonsterHealthBar(Monster monster){
-//        Label lab = new Label(monster.getTileName());
-//        ui.add(lab, 0, 0);
-//    }
 
     public void showInventory(GameMap map){
         Inventory inv = map.getPlayer().getPlayerInventory();
@@ -110,7 +113,8 @@ public class UserInterface {
         textField.setText("Wojo69");
 
         map.getPlayer().setName(textField.getText()); //set name as default
-//        showPlayerName(playerName); //at topBa
+        showPlayerName(map.getPlayer().getName()); //at topBa
+//        showMonsterName(name);
 
         textField.setFocusTraversable(false);
         textField.getStyleClass().add("name-field");
@@ -130,67 +134,133 @@ public class UserInterface {
         ui.add(submit, 1, 2);
     }
 
-//    Image image = new Image("/health_bar2.png") ;
-//    public PixelReader reader = image.getPixelReader();
-//    int width = 68;
-//    WritableImage newImage = new WritableImage(reader, 1, 1, 68, 15);
+
+    public void showPlayerHealthBar(int health){ //, String name
 
 
-    public void renderHpBar(WritableImage newImage, int width){
-        PixelWriter pw = newImage.getPixelWriter();
-        pw.setPixels(1,1, 51, 10, reader, 1, 1);
-        ImageView image2 = new ImageView(newImage);
-        image1 = image2;
-    }
+        int width;
 
+        switch (CustomUtils.RangePlayer.getFrom(health)) {
 
-
-    public void showPlayerHealthBar(int health){
-
-////        ImageView image = new ImageView(Tiles.getTileset());
-////        ImageView image = new ImageView("/health_bar2.png");
-//          Image image = new Image("/health_bar2.png") ;
-////        Rectangle2D tile = new Rectangle2D( Tiles.getTile("heart").x,
-////                Tiles.getTile("heart").y, Tiles.getTile("heart").x + 34,  Tiles.getTile("heart").y + 34);
-////       image.setImage();
-//
-//        PixelReader reader = image.getPixelReader();
-
-        int width = 68;
-        switch (health) {
-            case 15:
+            case FIFTEEN_PLAYER:
                 width = 68;
                 break;
-            case 10:
+
+            case TEN_PLAYER:
                 width = 51;
                 break;
-            case 5:
+
+            case FIVE_PLAYER:
                 width = 34;
                 break;
-            case 0:
+
+            case OTHER:
+            default:
                 width = 17;
                 break;
         }
 
-        WritableImage newImage2 = new WritableImage(reader, 1, 1, width, 15);
-        ImageView image2 = new ImageView(newImage2);
+        WritableImage newPlayerHealthImage = new WritableImage(readerPlayer, 1, 1, width, 15);
+        ImageView playerHealthImage = new ImageView(newPlayerHealthImage);
 
-//        renderHpBar(newImage,width);
+//        Label label1 = new Label("Search");
 
-        Label label1 = new Label("Search");
-//        label1.setGraphic(image);
-//        ImageView image1 = new ImageView(newImage);
-//        label1.setGraphic(image1);
-
-        ui.add(label1, 0, 0);
-        lab.setText(String.valueOf(health));
-        lab.setTextFill(Color.WHITESMOKE);
-        lab.setGraphic(image2);
+//        ui.add(label1, 0, 0);
+        labPlayer.setText(String.valueOf(health));
+        labPlayer.setTextFill(Color.WHITESMOKE);
+        labPlayer.setGraphic(playerHealthImage);
 
     }
 
     private void showPlayerName(String name){
-        healthBarText.setText(name + ": ");
-        healthBarText.setTextFill(Color.WHITESMOKE);
+        labPlayerName.setText("Player name: " + name + "  " );
+        labPlayerName.setTextFill(Color.WHITESMOKE);
+    }
+
+
+    public int calculateMonsterHealthBar(int health, String name) {
+        int width = 0;
+        if (name.equals("Golem")) {
+            switch (CustomUtils.RangeGolem.getFrom(health)) {
+
+                case THIRTY_GOLEM:
+                    width = 68;
+                    break;
+
+                case TWENTY_GOLEM:
+                    width = 51;
+                    break;
+
+                case TEN_GOLEM:
+                    width = 34;
+                    break;
+
+                case OTHER:
+                default:
+                    width = 68;
+                    break;
+            }
+        }
+        else if (name.equals("Skeleton")){
+            switch (CustomUtils.RangeSkeleton.getFrom(health)) {
+
+                case TEN_SKELETON:
+                    width = 68;
+                    break;
+
+                case SIX_SKELETON:
+                    width = 51;
+                    break;
+
+                case THREE_SKELETON:
+                    width = 34;
+                    break;
+
+                case OTHER:
+                default:
+                    width = 17;
+                    break;
+            }
+        }
+        else if(name.equals("Ghost")){
+            switch (CustomUtils.RangeGhost.getFrom(health)) {
+
+                case EIGHT_GHOST:
+                    width = 68;
+                    break;
+
+                case FIVE_GHOST:
+                    width = 51;
+                    break;
+
+                case TWO_GHOST:
+                    width = 34;
+                    break;
+
+                case OTHER:
+                default:
+                    width = 17;
+                    break;
+            }
+        }
+
+        return width;
+    }
+
+    public void showMonsterName(String name, int health){
+
+        labMonsterName.setVisible(true);
+        labMonster.setVisible(true);
+        labMonsterName.setText("Monster name: " + name + "  ");
+        labMonsterName.setTextFill(Color.WHITESMOKE);
+        labMonster.setText(String.valueOf(health));
+        labMonster.setTextFill(Color.WHITESMOKE);
+
+        WritableImage newMonsterHealthImage = new WritableImage(readerMonster, 1, 1, calculateMonsterHealthBar(health, name), 15);
+        ImageView monsterHealthImage = new ImageView(newMonsterHealthImage);
+        labMonster.setTextFill(Color.WHITESMOKE);
+        labMonster.setGraphic(monsterHealthImage);
+
+
     }
 }

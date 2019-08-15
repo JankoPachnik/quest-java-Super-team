@@ -111,7 +111,7 @@ public class Ghost extends Monster {
     }
 
     public String getName(){
-        return "";
+        return "Ghost";
     }
 
     @Override

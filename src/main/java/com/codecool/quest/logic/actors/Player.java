@@ -3,6 +3,7 @@ package com.codecool.quest.logic.actors;
 import com.codecool.quest.logic.Cell;
 import com.codecool.quest.logic.CellType;
 import com.codecool.quest.logic.Inventory;
+import com.codecool.quest.logic.UserInterface;
 import com.codecool.quest.logic.interactable.Interactable;
 import com.codecool.quest.logic.items.Item;
 
@@ -18,6 +19,8 @@ public class Player extends Actor {
     private int maxHealth;
     private boolean isAttackBoosted;
 
+    public Actor EnemyActor;
+
     public Player(Cell cell) {
         super(cell);
         playerInventory = new Inventory();
@@ -26,12 +29,14 @@ public class Player extends Actor {
         maxHealth = 15;
         this.attackPower = 5;
         isAttackBoosted = false;
+        Actor enemyActor;
     }
 
     public String getTileName() {
 
         return "player";
     }
+
 
     public void changeEquippedWeapon(Item newWeapon){
         currentWeapon = newWeapon;
@@ -92,8 +97,17 @@ public class Player extends Actor {
         return false;
     }
 
+    public boolean canAttack(){
+        boolean answer;
+        Actor actor = getNextCell().getActor();
+        answer = actor != null;
+            return answer;
+
+    }
+
     public String attack(){
         Actor actor = getNextCell().getActor();
+//        Actor enemyActor = actor;
         if(actor!= null) {
             if(actor.isEnemy) {
                 if (currentWeapon != null) {
@@ -108,6 +122,7 @@ public class Player extends Actor {
                 } else
                     actor.receiveAttack(getAttackPower(), actor.getDefense(), this);
                 isAttackBoosted = false;
+
             }
         }
         if(!this.isDead()) {

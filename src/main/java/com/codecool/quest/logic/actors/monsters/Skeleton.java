@@ -41,7 +41,7 @@ public class Skeleton extends Monster {
     }
 
     public String getName(){
-        return "";
+        return "Skeleton";
     }
 
     @Override
